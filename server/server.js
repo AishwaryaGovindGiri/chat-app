@@ -71,8 +71,13 @@ app.use("/api/messages" , messageRouter);
 await connectDB()
 
 
-const PORT = process.env.PORT || 5000 ;
 //process.end.port says -> use this port today xxxx
 //otherwise 5000 
 
-server.listen(PORT , ()=> console.log("server running on port " + PORT))
+if(process.env.NODE_ENV  !== "production"){
+    const PORT = process.env.PORT || 5000 ;
+    server.listen(PORT , ()=> console.log("server running on port " + PORT))
+}
+
+//export server for vervel
+export default server;
