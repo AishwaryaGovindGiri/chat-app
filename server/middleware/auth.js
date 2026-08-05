@@ -1,26 +1,22 @@
-//middleware to protect route/api endpoints
-//this function will execute before the controoler function to check pre authincation
-//this will check user before reaching endpoint
-
-
-import User from "../models/User.js";
 import jwt from "jsonwebtoken";
+import { pool } from "../lb/db.js";
 
-//next is used to execute the next funxtion{controllers}
-export const protectRoute = async(req , res , next)=>{
+export const protectRoute = async (req, res, next) => {
     try {
         const token = req.headers.token;
-        const decoded = jwt.verify(token , process.env.JWT_SECRET)
-        const user = await User.findById(decoded.userId).select("-password");
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-        if(!user) return res.json({success:false , message:"User not found"});
+        const result = await pool.query(
+            "SELECT id, email, full_name, profile_pic, bio, created_at, updated_at FROM users WHERE id = $1",
+            [decoded.userId]
+        );
+        const user = result.rows[0];
 
-        req.user = user 
-        //insert thi user inot req so controoler cna use user data 
+        if (!user) return res.json({ success: false, message: "User not found" });
+
+        req.user = user;
         next();
     } catch (error) {
-        res.json({success:false , message:error.message });
+        res.json({ success: false, message: error.message });
     }
-}
-
-//frontend -> token -> decode it > find in User model -> insert userdata -> req -> controllers access user data
+};

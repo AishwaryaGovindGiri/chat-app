@@ -49,7 +49,7 @@ export const ChatProvider = ({ children }) => {
 
   const sendMessage = async (messageData)=>{
     try {
-        const { data } = await axios.post(`/api/messages/send/${selectedUser._id}` , messageData);
+        const { data } = await axios.post(`/api/messages/send/${selectedUser.id}` , messageData);
         if(data.success){
             setMessages((prevMessages)=>[...prevMessages , data.newMessage])
         }else{
@@ -70,15 +70,15 @@ export const ChatProvider = ({ children }) => {
         console.count("newMessage listener fired");
 
       console.log("Socket message:", newMessage);
-      if(selectedUser && newMessage.senderId === selectedUser._id){
+      if(selectedUser && newMessage.sender_id === selectedUser.id){
         newMessage.seen = true;
         setMessages((prevMessages)=> [...prevMessages , newMessage]);
-        axios.put(`/api/messages/mark/${newMessage._id}`)
+        axios.put(`/api/messages/mark/${newMessage.id}`)
       }
       else{
         setUnseenMessages((prevUnseenMessages)=>({
-          ...prevUnseenMessages , [newMessage.senderId] : prevUnseenMessages[newMessage.senderId] ?
-           prevUnseenMessages[newMessage.senderId] + 1 : 1 
+          ...prevUnseenMessages , [newMessage.sender_id] : prevUnseenMessages[newMessage.sender_id] ?
+           prevUnseenMessages[newMessage.sender_id] + 1 : 1 
         }))
       }
         

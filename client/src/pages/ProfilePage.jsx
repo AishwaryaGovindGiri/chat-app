@@ -9,7 +9,7 @@ const ProfilePage = () => {
 
   const [selectedImg , setSelectedImg] = useState(null)
   const navigate = useNavigate();
-  const [name , setName] = useState(authUser.fullName);
+  const [name , setName] = useState(authUser.full_name);
   const [bio , setBio] = useState(authUser.bio);
   
   const handleSubmit = async (e)=>{
@@ -76,7 +76,7 @@ const ProfilePage = () => {
         </form>
         {/* right side */}
         <img className={`max-w-44 aspect-square rounded-full mx-10 max-sm:mt-10 ${selectedImg && 'rounded-full' }`}
-        src={ authUser?.profilePic || assets.logo_icon} alt="" />
+        src={ authUser?.profile_pic || assets.logo_icon} alt="" />
       </div>
     </div>
   )
