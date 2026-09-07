@@ -1,16 +1,20 @@
 import pkg from "pg";
+
 const { Pool } = pkg;
 
 export const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
 });
 
-// function to connect with postgres
+pool.on("error", (error) => {
+    console.log("Unexpected PostgreSQL pool error:", error.message);
+});
+
 export const connectDB = async () => {
     try {
-        await pool.connect();
+        await pool.query("SELECT 1");
         console.log("Database connected");
     } catch (error) {
-        console.log(error.message);
+        console.log("Database connection error:", error.message);
     }
 };
